@@ -9,4 +9,9 @@ public class AopDoing {
 		System.out.println("donging...");
 	}
 	
+	public void throwing(){
+			throw new RuntimeException();
+	}
+	
+	
 }

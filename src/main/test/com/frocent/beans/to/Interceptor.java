@@ -19,7 +19,7 @@ public class Interceptor implements Ordered{
 	public void after(){
 		System.out.println("after...");
 	}
-
+	
 	public int getOrder() {
 		return 30;
 	}

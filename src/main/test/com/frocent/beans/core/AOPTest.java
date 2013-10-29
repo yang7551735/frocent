@@ -15,4 +15,11 @@ public class AOPTest {
 		aopDoing.working();
 	}
 	
+	@Test
+	public void testThrowing(){
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext-annotation.xml");
+		AopDoing aopDoing= (AopDoing)applicationContext.getBean("aopDoing");
+		aopDoing.throwing();
+	}
+	
 }

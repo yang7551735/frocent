@@ -20,6 +20,7 @@ public class Interceptor2 implements Ordered{
 		System.out.println("after2...");
 	}
 
+	
 	public int getOrder() {
 		return 10;
 	}
