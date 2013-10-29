@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="userAction" class="com.frocent.beans.to.UserAction">
+		<property name="userManager" ref="userManager"></property>
+		<property name="successView" value="this is successView"></property>
+	</bean>
+	
+	<bean id="userManager" class="com.frocent.beans.to.UserManagerImpl"></bean>
+	
+	<bean id="userActionForApplicationContextAware"
+		class="com.frocent.beans.to.UserActionForApplicationContextAware">
+				<property name="successView" value="this is successView"></property>
+	</bean>
+	
+	<bean name="/toqux/user.do" class="com.frocent.beans.to.UserAction">
+		<property name="userManager">
+			<ref bean="userManager"/>
+		</property>
+		<property name="successView" value="this is successView"></property>
+	</bean>
+	
+	<bean id="settings" class="com.frocent.beans.to.Settings">
+		<property name="userManagerList">
+			<list>
+				<ref bean="userManager"/>
+			</list>
+		</property>
+		<property name="userManagerSet">
+			<set>
+				<ref bean="userManager"/>
+			</set>
+		</property>
+		<property name="userManagerMap">
+			<map>
+				<entry key="userManager">
+					<ref bean="userManager"/>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="userActionForAutowire"
+		class="com.frocent.beans.to.UserActionForAutowire" autowire="byType">
+	</bean>
+</beans>
