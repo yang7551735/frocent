@@ -11,13 +11,18 @@
 		http://www.springframework.org/schema/aop 
 		http://www.springframework.org/schema/aop/spring-aop.xsd">
 
+	<!-- 启动注解配置 -->
 	<context:annotation-config />
+	<!-- 启动Component扫描 -->
 	<context:component-scan base-package="com.frocent.webspider"></context:component-scan>
+	<!-- 启动Aspectj扫描 -->
 	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+	<!-- 启动事务管理 -->
+	<tx:annotation-driven transaction-manager="txManager"/>
 
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="locations" value="classpath:com/foo/jdbc.properties" />
+		<property name="locations" value="classpath:jdbc.properties" />
 	</bean>
 
 	<bean id="dataSource" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
@@ -37,7 +42,7 @@
 		</property>
 		<property name="hibernateProperties">
 			<value>
-				hibernate.dialect=org.hibernate.dialect.HSQLDialect
+				hibernate.dialect=org.hibernate.dialect.MySQLDialect
 				show_sql=true
 			</value>
 		</property>
@@ -45,20 +50,11 @@
 	
 	<bean id="txManager"
 		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-		<property name="mySessionFactory" ref="sessionFactory"></property>
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>
 
-	<tx:advice id="txAdvice" transaction-manager="txManager">
-		<tx:attributes>
-			<tx:method name="increasePrice*" propagation="REQUIRED" />
-			<tx:method name="someOtherBusinessMethod" propagation="REQUIRES_NEW" />
-			<tx:method name="*" propagation="SUPPORTS" read-only="true" />
-		</tx:attributes>
-	</tx:advice>
-
-	<aop:config>
-		<aop:pointcut id="productServiceMethods"
-			expression="execution(* com.frocent.webspider.manager.*(..))" />
-		<aop:advisor advice-ref="txAdvice" pointcut-ref="productServiceMethods" />
-	</aop:config>
 </beans>

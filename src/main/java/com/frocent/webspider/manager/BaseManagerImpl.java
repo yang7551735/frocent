@@ -2,12 +2,15 @@ package com.frocent.webspider.manager;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.frocent.common.utils.PagedList;
+import com.frocent.common.utils.SearchFilter;
 import com.frocent.webspider.dao.BaseDao;
-import com.frocent.webspider.utils.PagedList;
-import com.frocent.webspider.utils.SearchFilter;
 
 public class BaseManagerImpl<T> implements BaseManager<T> {
 
+	@Autowired
 	private BaseDao<T> baseDao;
 	
 	public PagedList<T> paged(SearchFilter searchFilter) {

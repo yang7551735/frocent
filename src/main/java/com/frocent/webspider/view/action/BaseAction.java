@@ -1,7 +1,7 @@
 package com.frocent.webspider.view.action;
 
+import com.frocent.common.utils.SearchFilter;
 import com.frocent.webspider.manager.BaseManager;
-import com.frocent.webspider.utils.SearchFilter;
 
 public class BaseAction<T> {
 	

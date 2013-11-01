@@ -9,11 +9,21 @@
 	<packaging>war</packaging>
 	<dependencies>
 		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>3.2.3.RELEASE</version>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>  
+            <groupId>org.springframework</groupId>  
+            <artifactId>spring-context-support</artifactId>  
+            <version>3.2.3.RELEASE</version>  
+        </dependency>  
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
@@ -70,7 +80,6 @@
 			<artifactId>spring-webmvc</artifactId>
 			<version>3.2.3.RELEASE</version>
 		</dependency>
-
 		<dependency>
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
@@ -78,6 +87,7 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<defaultGoal>compile</defaultGoal>
 		<finalName>core</finalName>
 	</build>
 </project>

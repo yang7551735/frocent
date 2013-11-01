@@ -10,6 +10,18 @@
 	</listener>
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INF/applicationContext*.xml</param-value>
+		<param-value>classpath:beans*.xml</param-value>
 	</context-param>
+	
+    <servlet>
+        <servlet-name>golfing</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>golfing</servlet-name>
+        <url-pattern>/webspider/*</url-pattern>
+    </servlet-mapping>
+
 </web-app>

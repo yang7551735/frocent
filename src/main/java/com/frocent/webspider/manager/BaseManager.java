@@ -2,8 +2,8 @@ package com.frocent.webspider.manager;
 
 import java.util.List;
 
-import com.frocent.webspider.utils.PagedList;
-import com.frocent.webspider.utils.SearchFilter;
+import com.frocent.common.utils.PagedList;
+import com.frocent.common.utils.SearchFilter;
 
 public interface BaseManager<T> {
 
