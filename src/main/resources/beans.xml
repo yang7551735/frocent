@@ -18,14 +18,15 @@
 	<!-- 启动Aspectj扫描 -->
 	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
 	<!-- 启动事务管理 -->
-	<tx:annotation-driven transaction-manager="txManager"/>
+	<tx:annotation-driven transaction-manager="txManager" />
 
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations" value="classpath:jdbc.properties" />
 	</bean>
 
-	<bean id="dataSource" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+	<bean id="dataSource" destroy-method="close"
+		class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="${jdbc.driverClassName}" />
 		<property name="url" value="${jdbc.url}" />
 		<property name="username" value="${jdbc.username}" />
@@ -35,26 +36,53 @@
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<property name="annotatedPackages">
+		<property name="annotatedClasses">
 			<list>
-				<value>com.frocent.webspider.domain</value>
+				<value>com.frocent.webspider.domain.Website</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
-			<value>
-				hibernate.dialect=org.hibernate.dialect.MySQLDialect
-				show_sql=true
-			</value>
+			<props>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="current_session_context_class">thread</prop>
+				<prop key="connection.pool_size">3</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="javax.persistence.validation.mode">none</prop>
+				<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop>
+			</props>
 		</property>
 	</bean>
-	
+
 	<bean id="txManager"
 		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
-	
-	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
-		<property name="sessionFactory" ref="sessionFactory"/>
-	</bean>
-
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="create*" propagation="REQUIRED" />
+			<tx:method name="insert*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="merge*" propagation="REQUIRED" />
+			<tx:method name="del*" propagation="REQUIRED" />
+			<tx:method name="remove*" propagation="REQUIRED" />
+			<tx:method name="put*" propagation="REQUIRED" />
+			<tx:method name="use*" propagation="REQUIRED" />
+			<!--hibernate4必须配置为开启事务 否则 getCurrentSession()获取不到 -->
+			<tx:method name="get*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="count*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="find*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="list*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="*" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+	<aop:config expose-proxy="true">
+		<!-- 只对业务逻辑层实施事务 -->
+		<aop:pointcut id="txPointcut"
+			expression="execution(* com.frocent.webspider.manager.*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" />
+	</aop:config>
 </beans>

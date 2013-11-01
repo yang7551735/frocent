@@ -8,33 +8,35 @@ import com.frocent.common.utils.PagedList;
 import com.frocent.common.utils.SearchFilter;
 import com.frocent.webspider.dao.BaseDao;
 
-public class BaseManagerImpl<T> implements BaseManager<T> {
+public abstract class BaseManagerImpl<T> implements BaseManager<T> {
 
 	@Autowired
-	private BaseDao<T> baseDao;
+	private BaseDao baseDao;
+	
+	public abstract Class<T> getClassType();
 	
 	public PagedList<T> paged(SearchFilter searchFilter) {
-		return baseDao.paged(searchFilter);
+		return baseDao.paged(getClassType() ,searchFilter);
 	}
 
 	public List<T> list(SearchFilter searchFilter) {
-		return baseDao.list(searchFilter);
+		return baseDao.list(getClassType(),searchFilter);
 	}
 
 	public T get(int id) {
-		return baseDao.get(id);
+		return baseDao.get(getClassType(),id);
 	}
 
 	public void addNew(T t) {
-		baseDao.addNew(t);
+		baseDao.addNew(getClassType(),t);
 	}
 
 	public void update(T t) {
-		baseDao.update(t);
+		baseDao.update(getClassType(),t);
 	}
 
 	public void delete(T t) {
-		baseDao.delete(t);
+		baseDao.delete(getClassType(),t);
 	}
 
 }

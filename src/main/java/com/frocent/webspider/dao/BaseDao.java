@@ -5,17 +5,17 @@ import java.util.List;
 import com.frocent.common.utils.PagedList;
 import com.frocent.common.utils.SearchFilter;
 
-public interface BaseDao<T> {
+public interface BaseDao {
 	
-	PagedList<T> paged(SearchFilter searchFilter);
+	<T> PagedList<T> paged(Class<T> clazz,SearchFilter searchFilter);
 	
-	List<T> list(SearchFilter searchFilter);
+	<T> List<T> list(Class<T> clazz,SearchFilter searchFilter);
 	
-	T get(int id);
+	<T> T get(Class<T> t,int id);
 	
-	void addNew(T t);
+	<T> void addNew(Class<T> clazz,T t);
 	
-	void update(T t);
+	<T> void update(Class<T> clazz,T t);
 	
-	void delete(T t);
+	<T> void delete(Class<T> clazz,T t);
 }

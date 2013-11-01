@@ -1,60 +1,58 @@
 package com.frocent.webspider.dao;
 
-import java.sql.SQLException;
 import java.util.List;
 
-import org.hibernate.HibernateException;
+import javax.annotation.Resource;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.hibernate.SessionFactory;
+import org.springframework.stereotype.Component;
 
 import com.frocent.common.utils.PagedList;
 import com.frocent.common.utils.SearchFilter;
 
-public class BaseDaoImpl<T> implements BaseDao<T>{
+@Component("baseDao")
+public class BaseDaoImpl implements BaseDao{
 
-	@Autowired
-	private HibernateTemplate hibernateTemplate;
-	
-	private Class<T> clazz;
-	
-	public PagedList<T> paged(final SearchFilter searchFilter) {
+	@Resource(name="sessionFactory") 
+	private SessionFactory sessionFactory;
+
+	public <T> PagedList<T> paged(Class<T> clazz, SearchFilter searchFilter) {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = searchFilter.buildPagedHql(clazz);
+		Query query = session.createQuery(hql);
+		query.setFirstResult(searchFilter.getFirstResult());
+		query.setMaxResults(searchFilter.getPageSize());
+		searchFilter.setParamter(query);
 		@SuppressWarnings("unchecked")
-		List<T> results =  hibernateTemplate.executeFind(new HibernateCallback<List<T>>() {
-			public List<T> doInHibernate(Session session) throws HibernateException,
-					SQLException {
-				String hql = searchFilter.buildPagedHql(clazz);
-				Query query = session.createQuery(hql);
-				query.setFirstResult(searchFilter.getFirstResult());
-				query.setMaxResults(searchFilter.getPageSize());
-				searchFilter.setParamter(query);
-				return query.list();
-			}
-		});
-		
+		List<T> results = query.list();
 		return new PagedList<T>(results,searchFilter.getPageNo(),searchFilter.getPageSize());
 	}
 
-	public List<T> list(SearchFilter searchFilter) {
+	public <T> List<T> list(Class<T> clazz, SearchFilter searchFilter) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public T get(int id) {
+	public <T> T get(Class<T> t, int id) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void addNew(T t) {
+	public <T> void addNew(Class<T> clazz, T t) {
+		// TODO Auto-generated method stub
 		
 	}
 
-	public void update(T t) {
+	public <T> void update(Class<T> clazz, T t) {
+		// TODO Auto-generated method stub
 		
 	}
 
-	public void delete(T t) {
+	public <T> void delete(Class<T> clazz, T t) {
+		// TODO Auto-generated method stub
 		
 	}
-
+	
 }

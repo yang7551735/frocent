@@ -21,7 +21,7 @@ public class WebsiteController {
 	@Autowired
 	private WebsiteManager websiteManager;
 	
-	@RequestMapping(value="/webspider/website/list")
+	@RequestMapping(value="/website/list.html")
 	public ModelAndView list(HttpServletRequest request,Website website){
 		SearchFilter searchFilter = SearchFilter.getDefault();
 		PagedList<Website> websites= websiteManager.paged(searchFilter);
