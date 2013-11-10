@@ -1,6 +1,7 @@
 package com.frocent.httpclient;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -15,11 +16,12 @@ import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.Test;
-import org.springframework.util.NumberUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.util.UrlPathHelper;
 
 import com.frocent.common.utils.RegExUtils;
-import com.google.common.collect.Interners;
-import com.google.common.primitives.Ints;
+import com.frocent.webspider.domain.Category;
+import com.frocent.webspider.domain.Website;
 
 public class HttpClientTest {
 
@@ -35,7 +37,10 @@ public class HttpClientTest {
 	@Test
 	public void test(){
 		DefaultHttpClient httpClient = new DefaultHttpClient();
-		HttpGet httpGet = new HttpGet("http://www.aishedes.org/forum.php");
+		
+		Website website = new Website();
+		
+		HttpGet httpGet = new HttpGet(website.getHomepage());
 		try {
 			CookieStore cookieStore = new BasicCookieStore();
 			setCookie(cookieStore, "nzrE_2132_saltkey", "uwbYRyYy");
@@ -64,19 +69,34 @@ public class HttpClientTest {
 			setCookie(cookieStore, "nzrE_2132_noticeTitle", "1");
 			setCookie(cookieStore, "nzrE_2132_lastact", "1383459907%09misc.php%09patch");
 			setCookie(cookieStore, "tjpctrl", "1383461708712");
-			httpClient.getParams().setParameter("http.useragent","Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.76 Safari/537.36");
+			httpClient.getParams().setParameter("http.useragent",website.getUseragent());
 			httpClient.setCookieStore(cookieStore);
 			
 			HttpResponse httpResponse = httpClient.execute(httpGet);
 			HttpEntity httpEntity = httpResponse.getEntity();
 			String content = EntityUtils.toString(httpEntity);
+			
 			List<String> contents = RegExUtils.getMatches(content, "<a href=\\\"forum.php\\?mod=forumdisplay\\&fid=[0-9]*\\\" >[\\S]*</a>", 0);
 			for (String matchContents : contents) {
+				
 				Document doc = Jsoup.parse(matchContents);
 				String title = doc.text();
 				String urlLink = doc.attr("href");
-				String[] parts = urlLink.split("=");
 				
+				
+				String[] parts = StringUtils.split(urlLink, "=");
+				
+				int categoryId = 0;
+				if(parts.length==3){
+					categoryId = Integer.parseInt(parts[2]);
+				}else{
+					throw new RuntimeException("非法版区链接");
+				}
+				
+				Category category = new Category();
+				category.setRefId(categoryId);
+				category.setTitle(title);
+				category.setUrlLink(urlLink);
 			}
 			
 		} catch (ClientProtocolException e) {
