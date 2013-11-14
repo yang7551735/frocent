@@ -3,25 +3,28 @@ package com.frocent.common.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.util.StringUtils;
-
-import com.google.common.base.Strings;
+import org.apache.commons.lang3.StringUtils;
 
 public class URLWrapper {
 	
 	private Map<String,String> params = new HashMap<String, String>();
 	private String relativeUrl = "";
+	private String uri;
 
 	public static URLWrapper wrap(String uri) {
 		
 		URLWrapper urlWrapper = new URLWrapper();
 		
-		if(Strings.isNullOrEmpty(uri)){
+		urlWrapper.uri = uri;
+		
+		if(StringUtils.isEmpty(uri)){
 			throw new IllegalArgumentException("参数不能为空");
 		}
+		
 		//不存在
 		if(uri.indexOf("?")==-1){
 			urlWrapper.setRelativeUrl(uri);
+			return urlWrapper;
 		}
 		
 		String queryString = StringUtils.split(uri, "?")[1];
@@ -29,7 +32,7 @@ public class URLWrapper {
 		
 		String[] queryArray = StringUtils.split(queryString, "&");
 		for (String query : queryArray) {
-			if(query.indexOf("=")!=-1){
+			if(StringUtils.contains(query, "=")){
 				String[] parts = StringUtils.split(query, "=");
 				if(parts.length==2){
 					urlWrapper.params.put(parts[0], parts[1]);					
@@ -53,6 +56,10 @@ public class URLWrapper {
 
 	public void setRelativeUrl(String relativeUrl) {
 		this.relativeUrl = relativeUrl;
+	}
+
+	public String getUri() {
+		return uri;
 	}
 
 }

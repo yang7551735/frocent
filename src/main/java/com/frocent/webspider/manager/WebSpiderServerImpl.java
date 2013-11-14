@@ -17,7 +17,7 @@ public class WebSpiderServerImpl {
 	public void handleRequest(URLWrapper urlWrapper){
 		
 		HttpClient httpClient = new DefaultHttpClient();
-		HttpGet httpGet = new HttpGet(urlWrapper.getUrl());
+		HttpGet httpGet = new HttpGet(urlWrapper.getUri());
 		try {
 			HttpResponse httpResponse = httpClient.execute(httpGet);
 			HttpEntity httpEntity = httpResponse.getEntity();
